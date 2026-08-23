@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Vectors: Complete Notes</title>
+    
+    <!-- Import Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js CSS for Colorful Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-coy.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #f97316; /* Vibrant Orange */
+            --primary-light: #ffedd5; /* Very Light Orange */
+            --bg-color: #fafafa;
+            --container-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--container-bg);
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.05);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 1.75rem;
+            margin-top: 50px;
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 30px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .note-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            color: #9a3412;
+            font-size: 0.95rem;
+        }
+
+        /* Customizing Prism Code Blocks */
+        pre[class*="language-"] {
+            border-left: 4px solid var(--primary) !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 25px 20px;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>C++ Vectors</h1>
+        <p>A comprehensive guide to standard template library (STL) vectors in C++, detailing initialization, element access, capacity management, and multidimensional usage.</p>
+
+        <!-- SECTION 1 -->
+        <h2>1. Initialization & Basic Operations</h2>
+        <p>Vectors are dynamic arrays. Here is how to create them, add/remove elements, and check their properties.</p>
+        
+        <div class="note-box">
+            <strong>Key Functions:</strong> <br>
+            <code>push_back(val)</code>: Appends an element. <br>
+            <code>pop_back()</code>: Removes the last element. <br>
+            <code>size()</code>: Returns the number of elements.
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    // 1. Initializations
+    vector&lt;int&gt; marks;                   // Empty vector
+    vector&lt;int&gt; miles(10);               // 10 blocks, initialized to 0
+    vector&lt;int&gt; scores(10, 5);           // 10 blocks, initialized to 5
+
+    // 2. Modifying Elements
+    scores.push_back(20);                // Appends 20 to the end
+    scores.pop_back();                   // Removes the last element
+
+    // 3. Properties and Access
+    cout &lt;&lt; "Size: " &lt;&lt; scores.size() &lt;&lt; endl;
+    cout &lt;&lt; "Capacity: " &lt;&lt; scores.capacity() &lt;&lt; endl;
+    
+    cout &lt;&lt; "First Element: " &lt;&lt; scores.front() &lt;&lt; endl; 
+    cout &lt;&lt; "Last Element: " &lt;&lt; scores.back() &lt;&lt; endl; 
+    cout &lt;&lt; "Is Empty? (1=True, 0=False): " &lt;&lt; scores.empty() &lt;&lt; endl;
+
+    // 4. Accessing Specific Indexes
+    cout &lt;&lt; scores[1] &lt;&lt; endl;           // Unsafe access (no bounds check)
+    cout &lt;&lt; scores.at(1) &lt;&lt; endl;        // Safe access (throws exception if out of bounds)
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 2 -->
+        <h2>2. Size vs. Capacity & Memory Management</h2>
+        <p><strong>Size</strong> is the current number of elements. <strong>Capacity</strong> is the total space currently allocated in memory. When a vector runs out of capacity, it typically doubles its capacity (allocating a new contiguous block of memory and moving elements).</p>
+
+        <div class="note-box">
+            <strong>Pro Tip:</strong> Use <code>reserve()</code> if you know exactly how many elements you will insert. This prevents expensive background reallocations.
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; marks;
+    
+    // Pre-allocate memory to avoid background reallocations
+    marks.reserve(20);
+    
+    cout &lt;&lt; "Current Size: " &lt;&lt; marks.size() &lt;&lt; endl;       // 0
+    cout &lt;&lt; "Reserved Capacity: " &lt;&lt; marks.capacity() &lt;&lt; endl; // 20
+
+    // Modifying elements using iterators
+    marks = {10, 20, 30, 40};
+    
+    marks.insert(marks.end() - 1, 900); // Inserts 900 before the last element
+    marks.erase(marks.begin());         // Erases the first element
+    
+    // Erase a range (clears the entire vector here)
+    marks.erase(marks.begin(), marks.end()); 
+    // This is equivalent to: marks.clear();
+
+    cout &lt;&lt; "Max possible size: " &lt;&lt; marks.max_size() &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 3 -->
+        <h2>3. Swapping Vectors</h2>
+        <p>You can easily swap the contents of two vectors. This operation is highly efficient because it only swaps the internal memory pointers, rather than copying elements one by one.</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; first = {1, 2, 3, 4, 5, 6, 7};
+    vector&lt;int&gt; second = {8, 9, 10, 11};
+
+    // Both methods below work perfectly:
+    // swap(first, second); 
+    second.swap(first); 
+
+    cout &lt;&lt; "First vector contents: ";
+    for (int i : first) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 4 -->
+        <h2>4. Iterators and Looping</h2>
+        <p>Iterators behave like pointers to the elements inside the vector. They are essential for functions like <code>insert()</code>, <code>erase()</code>, and for traversing.</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; marks = {10, 20, 30, 40};
+
+    cout &lt;&lt; "Using For Loop: " &lt;&lt; endl;
+    for (vector&lt;int&gt;::iterator it = marks.begin(); it != marks.end(); it++) {
+        cout &lt;&lt; *(it) &lt;&lt; " ";
+    }
+    
+    cout &lt;&lt; "\nUsing While Loop: " &lt;&lt; endl;
+    vector&lt;int&gt;::iterator it = marks.begin();
+    while (it != marks.end()) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+        it++;
+    }
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 5 -->
+        <h2>5. 2D Vectors & Jagged Arrays</h2>
+        <p>A 2D vector is simply a vector containing other vectors. They are heavily used to create matrices. Unlike standard 2D arrays, 2D vectors can be "jagged" (uneven), meaning each row can have a completely different number of columns.</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    // Uniform Matrix: 5 rows, 4 columns, all initialized to 0
+    vector&lt;vector&lt;int&gt;&gt; matrix(5, vector&lt;int&gt;(4, 0)); 
+    
+    cout &lt;&lt; "Rows: " &lt;&lt; matrix.size() &lt;&lt; endl;
+    cout &lt;&lt; "Columns: " &lt;&lt; matrix[0].size() &lt;&lt; endl;
+
+    // Manual Assignment of a Jagged Matrix
+    vector&lt;vector&lt;int&gt;&gt; v(4); 
+    v[0] = vector&lt;int&gt;(3, 0); // 1st row has 3 columns
+    v[1] = vector&lt;int&gt;(6, 0); // 2nd row has 6 columns
+    v[2] = vector&lt;int&gt;(1, 0); // 3rd row has 1 column
+    v[3] = vector&lt;int&gt;(5, 0); // 4th row has 5 columns
+
+    // Initializer list with uneven rows
+    vector&lt;vector&lt;int&gt;&gt; uneven = {
+        {1, 2, 3},
+        {1, 2},
+        {3, 4, 4, 5, 6}
+    };
+
+    // Range-based for loop to print 2D vector
+    for (vector&lt;int&gt; row : uneven) {
+        for (int val : row) {
+            cout &lt;&lt; val &lt;&lt; " ";
+        }
+        cout &lt;&lt; "\n";
+    }
+
+    return 0;
+}</code></pre>
+
+    </div>
+
+    <!-- Prism.js Script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>
