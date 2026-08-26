@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Queues, Deques & Priority Queues</title>
+    
+    <!-- Import Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js CSS for Colorful Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-coy.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #f97316; /* Vibrant Orange */
+            --primary-light: #ffedd5; /* Very Light Orange */
+            --bg-color: #fafafa;
+            --container-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--container-bg);
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.05);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 1.75rem;
+            margin-top: 50px;
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .note-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            color: #9a3412;
+            font-size: 0.95rem;
+        }
+
+        /* Customizing Prism Code Blocks */
+        pre[class*="language-"] {
+            border-left: 4px solid var(--primary) !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 25px 20px;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>C++ Queues, Deques & Priority Queues</h1>
+        <p>A complete guide to sequential containers that manage elements based on specific ordering rules: FIFO (Queue), double-ended access (Deque), and heap-based sorting (Priority Queue).</p>
+
+        <!-- SECTION 1 -->
+        <h2>1. Queue (std::queue)</h2>
+        <p>A Queue operates strictly on the <strong>First-In, First-Out (FIFO)</strong> principle. Elements are pushed to the back and popped from the front.</p>
+        
+        <div class="note-box">
+            <strong>Key Limitations:</strong> Unlike Vectors or Deques, standard queues <strong>do not support indexing</strong> (e.g., <code>q[0]</code> is invalid) and <strong>do not support iteration</strong> (you cannot use a for-loop on a queue). To traverse a queue, you must pop elements one by one.
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+int main() {
+    queue&lt;int&gt; q;
+    
+    // Pushing elements to the back
+    q.push(10);
+    q.push(20);
+    q.push(30);
+    q.push(40);
+
+    cout &lt;&lt; "Front: " &lt;&lt; q.front() &lt;&lt; endl; // 10
+    cout &lt;&lt; "Back: " &lt;&lt; q.back() &lt;&lt; endl;   // 40
+
+    q.pop(); // Removes the first element (10)
+    cout &lt;&lt; "New Front: " &lt;&lt; q.front() &lt;&lt; endl; // 20
+
+    cout &lt;&lt; "Size: " &lt;&lt; q.size() &lt;&lt; endl;
+    cout &lt;&lt; "Is Empty? " &lt;&lt; q.empty() &lt;&lt; endl;
+
+    // Swapping Queues
+    queue&lt;int&gt; q1, q2;
+    for (int i : {1, 2, 3}) q1.push(i);
+    for (int i : {10, 20, 30, 40}) q2.push(i);
+    
+    swap(q1, q2); 
+    // Now q1 has {10, 20, 30, 40} and q2 has {1, 2, 3}
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 2 -->
+        <h2>2. Deque (std::deque)</h2>
+        <p>A Deque (Double-Ended Queue) is a versatile container that combines the best features of Vectors and Lists. It allows fast insertion and deletion at <strong>both the front and the back</strong>, while still supporting <strong>random access indexing</strong>.</p>
+        
+        <div class="note-box">
+            <strong>Pro Tip:</strong> Unlike Lists, Deques use continuous blocks of memory under the hood, making them cache-friendly while maintaining constant-time insertions at both ends!
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;deque&gt;
+using namespace std;
+
+int main() {
+    // Initialization
+    deque&lt;int&gt; dq = {10, 20, 30};
+
+    // Indexing is allowed!
+    cout &lt;&lt; "Index 0: " &lt;&lt; dq[0] &lt;&lt; endl;       // 10
+    cout &lt;&lt; "Using .at(): " &lt;&lt; dq.at(1) &lt;&lt; endl; // 20
+
+    // Modifying both ends
+    dq.push_back(40);
+    dq.push_front(0);
+    // dq is now: {0, 10, 20, 30, 40}
+
+    dq.pop_back();   // Removes 40
+    dq.pop_front();  // Removes 0
+
+    // Successful Iteration (Range-based for loop works!)
+    cout &lt;&lt; "Deque elements: ";
+    for (int i : dq) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Iterator Arithmetic Works
+    cout &lt;&lt; "Second element: " &lt;&lt; *(dq.begin() + 1) &lt;&lt; endl;
+    cout &lt;&lt; "Last element: " &lt;&lt; *(dq.end() - 1) &lt;&lt; endl;
+
+    // Insertion & Deletion using Iterators
+    dq.insert(dq.begin(), 100);       // Insert at front
+    dq.insert(dq.end(), 500);         // Insert at back
+
+    dq.erase(dq.begin());             // Erase first element
+    
+    // NOTE: dq.erase(dq.end()) is DANGEROUS! end() is out of bounds.
+    // Use dq.erase(dq.end() - 1) to erase the last element.
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 3 -->
+        <h2>3. Priority Queue (std::priority_queue)</h2>
+        <p>A Priority Queue is implemented as a <strong>Heap</strong> data structure. By default, it acts as a <strong>Max-Heap</strong>, meaning the largest element is automatically sorted to the top.</p>
+        
+        <div class="note-box">
+            <strong>Key Concept:</strong> Pushing an element will automatically place it in the correct order based on priority. Like a standard Queue, there is no iteration—you can only access the <code>top()</code> element.
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+int main() {
+    // 1. DEFAULT: MAX-HEAP
+    // (Largest element stays at the top)
+    priority_queue&lt;int&gt; pq; 
+    
+    pq.push(10); // {10}
+    pq.push(9);  // {10, 9}
+    pq.push(20); // {20, 10, 9}
+    pq.push(15); // {20, 15, 10, 9}
+
+    cout &lt;&lt; "Max-Heap Top: " &lt;&lt; pq.top() &lt;&lt; endl; // 20
+    pq.pop(); // Removes 20
+
+    cout &lt;&lt; "New Top: " &lt;&lt; pq.top() &lt;&lt; endl;      // 15
+    pq.pop(); // Removes 15
+
+    // 2. MANUAL: MIN-HEAP
+    // (Smallest element stays at the top)
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; min_heap;
+    
+    min_heap.push(50);
+    min_heap.push(10);
+    min_heap.push(30);
+
+    cout &lt;&lt; "Min-Heap Top: " &lt;&lt; min_heap.top() &lt;&lt; endl; // 10
+
+    return 0;
+}</code></pre>
+
+    </div>
+
+    <!-- Prism.js Script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>
