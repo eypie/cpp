@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Sets: Complete Notes</title>
+    
+    <!-- Import Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js CSS for Colorful Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-coy.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #f97316; /* Vibrant Orange */
+            --primary-light: #ffedd5; /* Very Light Orange */
+            --bg-color: #fafafa;
+            --container-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--container-bg);
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.05);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 1.75rem;
+            margin-top: 50px;
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .note-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            color: #9a3412;
+            font-size: 0.95rem;
+        }
+
+        /* Customizing Prism Code Blocks */
+        pre[class*="language-"] {
+            border-left: 4px solid var(--primary) !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 25px 20px;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>C++ Sets & Unordered Sets</h1>
+        <p>A Set is a container that stores <strong>unique</strong> elements. If you try to insert a duplicate value, the Set will simply ignore it.</p>
+        <ul>
+            <li><code>std::set</code>: Elements are automatically <strong>sorted</strong> in ascending order (implemented via Red-Black Trees).</li>
+            <li><code>std::unordered_set</code>: Elements are <strong>unsorted</strong>, but insertion and lookup are much faster (O(1) average time, implemented via Hash Tables).</li>
+        </ul>
+
+        <!-- SECTION 1 -->
+        <h2>1. Insertion & Uniqueness</h2>
+        <p>When you insert elements into a set, it automatically filters out duplicates.</p>
+        
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;unordered_set&gt;
+using namespace std;
+
+int main() {
+    // Notice the duplicate '2' in the initializer list
+    unordered_set&lt;int&gt; st = {1, 2, 2, 3, 4}; 
+    
+    st.insert(10);
+    st.insert(20);
+    st.insert(30);
+    
+    // Trying to insert a duplicate value
+    st.insert(20); // This will be ignored!
+
+    // The size will be 7, not 9, because duplicates were discarded.
+    cout &lt;&lt; "Size: " &lt;&lt; st.size() &lt;&lt; endl; 
+    
+    cout &lt;&lt; "Is Empty? " &lt;&lt; st.empty() &lt;&lt; endl;
+
+    // st.clear(); // This would empty the entire set
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 2 -->
+        <h2>2. Traversing a Set</h2>
+        <p>Because sets are not indexed like arrays, you cannot use <code>st[0]</code>. You must use iterators or a range-based for loop.</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;set&gt;
+using namespace std;
+
+int main() {
+    // Using a regular ordered set this time
+    set&lt;int&gt; st = {30, 10, 40, 20}; 
+    
+    cout &lt;&lt; "1. Range-based for loop (Cleanest):" &lt;&lt; endl;
+    for (int i : st) {
+        cout &lt;&lt; i &lt;&lt; " "; // Output: 10 20 30 40 (Automatically sorted!)
+    }
+    cout &lt;&lt; "\n\n";
+
+    cout &lt;&lt; "2. Using a standard For Loop with Iterators:" &lt;&lt; endl;
+    for (auto it = st.begin(); it != st.end(); it++) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+    }
+    cout &lt;&lt; "\n\n";
+
+    cout &lt;&lt; "3. Using a While Loop with Iterators:" &lt;&lt; endl;
+    set&lt;int&gt;::iterator it = st.begin();
+    while (it != st.end()) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+        it++;
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 3 -->
+        <h2>3. Searching & Erasing Elements</h2>
+        <p>Sets are highly optimized for checking if an element exists. You should use <code>find()</code> or <code>count()</code>.</p>
+        
+        <div class="note-box">
+            <strong>Key Concept:</strong> <code>count()</code> is extremely useful in sets. Because all elements are unique, <code>count(val)</code> will strictly return <strong>1</strong> if the value exists, and <strong>0</strong> if it does not. It effectively acts as a boolean check.
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;unordered_set&gt;
+using namespace std;
+
+int main() {
+    unordered_set&lt;int&gt; st = {10, 20, 30, 40, 50};
+
+    // --- SEARCHING ---
+    
+    // Method 1: Using count() (Easiest way to check existence)
+    cout &lt;&lt; "Is 30 present? " &lt;&lt; st.count(30) &lt;&lt; endl; // 1 (True)
+    cout &lt;&lt; "Is 99 present? " &lt;&lt; st.count(99) &lt;&lt; endl; // 0 (False)
+
+    // Method 2: Using find()
+    // find() returns an iterator to the element. If not found, it returns st.end()
+    if (st.find(20) != st.end()) {
+        cout &lt;&lt; "20 was found in the set!" &lt;&lt; endl;
+    }
+
+    // You can also cast the comparison directly to a boolean
+    bool exists = (st.find(13) != st.end());
+    cout &lt;&lt; "Does 13 exist? " &lt;&lt; exists &lt;&lt; endl; // 0 (False)
+
+
+    // --- ERASING ---
+    
+    // Erasing by value directly
+    st.erase(40);
+    
+    // Erasing using an iterator
+    auto it = st.find(10);
+    if (it != st.end()) {
+        st.erase(it);
+    }
+
+    cout &lt;&lt; "Set after erasing 40 and 10: ";
+    for (int i : st) cout &lt;&lt; i &lt;&lt; " ";
+    cout &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+    </div>
+
+    <!-- Prism.js Script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>
