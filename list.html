@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Lists: Complete Notes</title>
+    
+    <!-- Import Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js CSS for Colorful Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-coy.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #f97316; /* Vibrant Orange */
+            --primary-light: #ffedd5; /* Very Light Orange */
+            --bg-color: #fafafa;
+            --container-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--container-bg);
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.05);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 1.75rem;
+            margin-top: 50px;
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .note-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            color: #9a3412;
+            font-size: 0.95rem;
+        }
+
+        /* Customizing Prism Code Blocks */
+        pre[class*="language-"] {
+            border-left: 4px solid var(--primary) !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 25px 20px;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>C++ Lists (std::list)</h1>
+        <p>In C++, <code>std::list</code> is a <strong>Doubly Linked List</strong>. Unlike vectors (which use contiguous memory), list elements are scattered in memory and connected via pointers. This makes inserting/removing elements in the middle very fast, but direct element access (like <code>nums[2]</code>) impossible.</p>
+
+        <!-- SECTION 1 -->
+        <h2>1. Basic Operations: Push, Pop, & Info</h2>
+        <p>Because it's a doubly linked list, you can efficiently add and remove elements from <em>both</em> the front and the back.</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;list&gt;
+
+using namespace std;
+
+int main() {
+    list&lt;int&gt; numbers = {10, 20, 30, 40};
+
+    // Adding elements to both ends
+    numbers.push_back(50);   // {10, 20, 30, 40, 50}
+    numbers.push_front(1);   // {1, 10, 20, 30, 40, 50}
+    
+    // Removing elements from both ends
+    numbers.pop_back();      // Removes 50
+    numbers.pop_front();     // Removes 1
+
+    // Basic List Info
+    cout &lt;&lt; "Size: " &lt;&lt; numbers.size() &lt;&lt; endl; 
+    cout &lt;&lt; "Is Empty? " &lt;&lt; numbers.empty() &lt;&lt; endl; 
+    cout &lt;&lt; "First: " &lt;&lt; numbers.front() &lt;&lt; " | Back: " &lt;&lt; numbers.back() &lt;&lt; endl;
+
+    // numbers.clear(); // This would empty the entire list
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 2 -->
+        <h2>2. Iterating & Removing Elements</h2>
+        <div class="note-box">
+            <strong>Crucial Concept:</strong> Lists use <em>Bidirectional Iterators</em>, not Random Access Iterators. <br>
+            You <strong>cannot</strong> do pointer arithmetic like <code>numbers.end() - 1</code> or <code>it + 2</code>. You must step through memory one node at a time using <code>it++</code> or <code>it--</code>.
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;list&gt;
+
+using namespace std;
+
+int main() {
+    list&lt;int&gt; numbers = {10, 20, 30, 40};
+    numbers.push_back(10); // List is now: 10 -> 20 -> 30 -> 40 -> 10
+
+    // Traversing using a while loop
+    cout &lt;&lt; "List contents: ";
+    list&lt;int&gt;::iterator it = numbers.begin();
+    while(it != numbers.end()) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+        it++;
+    }
+    cout &lt;&lt; "\n";
+
+    // remove(val) removes ALL occurrences of 'val' in the list
+    numbers.remove(10); 
+    
+    // Traversing using a for loop
+    cout &lt;&lt; "After removing 10s: ";
+    for(auto i = numbers.begin(); i != numbers.end(); i++) {
+        cout &lt;&lt; *i &lt;&lt; " ";
+    }
+    cout &lt;&lt; "\n";
+    
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 3 -->
+        <h2>3. Advanced Iteration: std::next & std::prev</h2>
+        <p>Because we can't use <code>+</code> or <code>-</code> with list iterators, C++ provides <code>std::next()</code> and <code>std::prev()</code> to safely advance iterators.</p>
+        
+        <div class="note-box">
+            <strong>Warning about <code>end()</code>:</strong> The <code>.end()</code> iterator points to one-step <em>past</em> the last element. Dereferencing <code>*nums.end()</code> results in undefined behavior. You must step back by one to get the actual last element.
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;iterator&gt; // needed for std::next and std::prev
+
+using namespace std;
+
+int main() {
+    list&lt;int&gt; nums = {10, 20, 30, 40, 50};
+
+    // 1. Getting specific elements from the start
+    cout &lt;&lt; "1st element: " &lt;&lt; *nums.begin() &lt;&lt; endl;              // 10
+    cout &lt;&lt; "2nd element: " &lt;&lt; *next(nums.begin()) &lt;&lt; endl;        // 20
+    cout &lt;&lt; "3rd element: " &lt;&lt; *next(nums.begin(), 2) &lt;&lt; endl;     // 30
+
+    // 2. Getting specific elements from the end
+    cout &lt;&lt; "Last element: " &lt;&lt; *prev(nums.end()) &lt;&lt; endl;         // 50
+    cout &lt;&lt; "2nd to last: " &lt;&lt; *prev(nums.end(), 2) &lt;&lt; endl;       // 40
+
+    // 3. Inserting an element using advanced iterators
+    // Syntax: list_name.insert(iterator_position, element)
+    
+    // nums.insert(nums.end() - 1, 100); // ❌ THIS WILL CAUSE AN ERROR!
+    nums.insert(prev(nums.end()), 100);  // ✅ CORRECT WAY (Inserts before 50)
+
+    cout &lt;&lt; "After insertion: ";
+    for (int x : nums) {
+        cout &lt;&lt; x &lt;&lt; " ";
+    }
+    // Output: 10 20 30 40 100 50
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 4 -->
+        <h2>4. Swapping Lists</h2>
+        <p>Just like Vectors, you can easily swap the contents of two lists. Because of how linked lists work, this operation simply swaps the internal head/tail pointers, making it incredibly fast regardless of the list size.</p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;list&gt;
+
+using namespace std;
+
+int main() {
+    list&lt;int&gt; ls1 = {1, 2, 3, 4};
+    list&lt;int&gt; ls2 = {5, 6, 7};
+
+    // Both methods work:
+    // swap(ls1, ls2);
+    ls2.swap(ls1);
+
+    cout &lt;&lt; "List 1: ";
+    for(int x : ls1) { cout &lt;&lt; x &lt;&lt; " "; }
+    
+    cout &lt;&lt; "\nList 2: ";
+    for(int x : ls2) { cout &lt;&lt; x &lt;&lt; " "; }
+    cout &lt;&lt; "\n";
+
+    return 0;
+}</code></pre>
+
+    </div>
+
+    <!-- Prism.js Script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>
