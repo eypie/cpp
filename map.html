@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Maps: Complete Notes</title>
+    
+    <!-- Import Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js CSS for Colorful Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-coy.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #f97316; /* Vibrant Orange */
+            --primary-light: #ffedd5; /* Very Light Orange */
+            --bg-color: #fafafa;
+            --container-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--container-bg);
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.05);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 1.75rem;
+            margin-top: 50px;
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .note-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            color: #9a3412;
+            font-size: 0.95rem;
+        }
+
+        /* Customizing Prism Code Blocks */
+        pre[class*="language-"] {
+            border-left: 4px solid var(--primary) !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 25px 20px;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>C++ Maps & Unordered Maps</h1>
+        <p>Maps are associative containers that store elements in <strong>Key-Value pairs</strong>. Each key must be unique. </p>
+        <ul>
+            <li><code>std::map</code>: Implemented as a Red-Black Tree. Keys are automatically <strong>sorted</strong>. Slower access (O(log n)).</li>
+            <li><code>std::unordered_map</code>: Implemented as a Hash Table. Keys are <strong>unordered</strong>. Faster access (O(1)).</li>
+        </ul>
+
+        <!-- SECTION 1 -->
+        <h2>1. Insertion & Access Methods</h2>
+        <p>There are multiple ways to insert Key-Value pairs into a map. It is important to know the difference between accessing them with the bracket operator <code>[]</code> versus the <code>.at()</code> function.</p>
+        
+        <div class="note-box">
+            <strong>Crucial Rule:</strong> The <code>.at()</code> function is strict. It is used <em>only</em> for retrieval or updating. If the key doesn't exist, it throws an error. The <code>[]</code> operator is lenient: if the key doesn't exist, it will <strong>automatically insert</strong> it with a default value!
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+int main() {
+    unordered_map&lt;string, string&gt; table;
+
+    // Insertion Way 1: Using the bracket operator (Easiest & Most Common)
+    table["in"] = "India";
+    
+    // Insertion Way 2: Using insert() with make_pair
+    table.insert(make_pair("br", "Brazil"));
+    
+    // Insertion Way 3: Creating a pair object manually
+    pair&lt;string, string&gt; p;
+    p.first = "en";
+    p.second = "England";
+    table.insert(p);
+    
+    // Insertion Way 4: Modern C++ Initializer List
+    table.insert({"jp", "Japan"});
+
+    // Accessing elements
+    cout &lt;&lt; table["in"] &lt;&lt; endl;    // Outputs: India
+    cout &lt;&lt; table.at("br") &lt;&lt; endl; // Outputs: Brazil
+
+    // Basic Methods
+    cout &lt;&lt; "Size: " &lt;&lt; table.size() &lt;&lt; endl; 
+    // table.clear(); // empties the map
+    // cout &lt;&lt; table.empty(); // returns 1 if empty, 0 otherwise
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 2 -->
+        <h2>2. Searching: find() vs count()</h2>
+        <p>Because the <code>[]</code> operator silently inserts missing keys, you should never use it just to check if a key exists. Instead, use <code>find()</code> or <code>count()</code>.</p>
+
+        <div class="note-box">
+            <strong>Undefined Behavior Warning:</strong> <code>table.find("key")</code> returns an iterator. If the key is not found, it returns <code>table.end()</code>. If you try to blindly print the result without checking, you will dereference an invalid iterator and crash your program!
+        </div>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;map&gt;
+using namespace std;
+
+int main() {
+    map&lt;string, int&gt; scores;
+    scores["Alice"] = 95;
+    scores["Bob"] = 80;
+
+    // METHOD 1: Using count() 
+    // Returns 1 if key exists, 0 if it doesn't (since keys are unique)
+    cout &lt;&lt; "Does Charlie exist? " &lt;&lt; scores.count("Charlie") &lt;&lt; endl; // 0
+
+    // METHOD 2: Using find() (The safest and most standard way)
+    auto it = scores.find("Alice");
+    
+    if (it != scores.end()) {
+        // Safe to access
+        cout &lt;&lt; "Found Alice! Score: " &lt;&lt; it-&gt;second &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "Key not found!" &lt;&lt; endl;
+    }
+
+    // cout &lt;&lt; (*(scores.find("Charlie"))).first &lt;&lt; endl; // ❌ CRASH! UNDEFINED BEHAVIOR!
+
+    return 0;
+}</code></pre>
+
+        <!-- SECTION 3 -->
+        <h2>3. Traversing a Map</h2>
+        <p>When traversing a map, the iterator points to a <code>std::pair</code>. You access the key using <code>first</code> and the value using <code>second</code>. <br>
+        <em>Tip: Use the arrow operator <code>it-&gt;first</code> instead of dereferencing <code>(*it).first</code> for cleaner code.</em></p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;map&gt;
+using namespace std;
+
+int main() {
+    // Note: Because this is an ORDERED map, the output will 
+    // automatically be sorted alphabetically by the keys!
+    map&lt;string, string&gt; table;
+    
+    table["in"] = "India";
+    table["br"] = "Brazil";
+    table["en"] = "England";
+    table["au"] = "Australia";
+
+    cout &lt;&lt; "--- Using Iterator (While Loop) ---" &lt;&lt; endl;
+    auto it = table.begin();
+    while (it != table.end()) {
+        // it->first is the key, it->second is the value
+        cout &lt;&lt; it-&gt;first &lt;&lt; " : " &lt;&lt; it-&gt;second &lt;&lt; endl;
+        it++;
+    }
+
+    cout &lt;&lt; "\n--- Using Range-Based For Loop (Modern C++) ---" &lt;&lt; endl;
+    for (auto const& pair : table) {
+        cout &lt;&lt; pair.first &lt;&lt; " : " &lt;&lt; pair.second &lt;&lt; endl;
+    }
+    
+    /* 
+    OUTPUT (Alphabetically sorted by key):
+    au : Australia
+    br : Brazil
+    en : England
+    in : India
+    */
+
+    return 0;
+}</code></pre>
+
+    </div>
+
+    <!-- Prism.js Script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>
